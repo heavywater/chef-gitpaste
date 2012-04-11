@@ -1,0 +1,24 @@
+def gitpaste_red_unicorn
+  "<%= @red_unicorn_exec %> --pid-file <%= @pid_file %> --unicorn-exec <%= @gunicorn_exec %> --kind gunicorn --unicorn-config <%= @config_file %>"
+end
+
+Bluepill.application('gitpaste', :log_file => "<%= @pill_log %>") do |app|
+  app.process('gitpaste') do |process|
+    process.pid_file = "<%= @pid_file %>"
+    process.working_dir = "<%= @working_dir %>"
+    process.start_command = "#{gitpaste_red_unicorn} start"
+    process.stop_command = "#{gitpaste_red_unicorn} stop"
+    process.restart_command = "#{gitpaste_red_unicorn} restart"
+    process.uid = "nobody"
+    process.gid = "nogroup"
+    process.stdout = process.stderr = "<%= @process_log %>"
+
+    process.start_grace_time = 10.seconds
+    process.stop_grace_time = 10.seconds
+    process.restart_grace_time = 20.seconds
+
+    process.monitor_children do |child_process|
+      child_process.stop_command = "kill -QUIT {{PID}}"
+    end
+  end
+end
