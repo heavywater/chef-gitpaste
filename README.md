@@ -10,7 +10,7 @@ This cookbook installs and configures gitpaste. Currently supported configuratio
 Github
 ------
 
-http://github.com/chrisroberts/gitpaste.git
+http://github.com/heavywater/chef-gitpaste
 
 More Info
 ---------
