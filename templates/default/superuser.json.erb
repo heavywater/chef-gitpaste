@@ -1,0 +1,18 @@
+[{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "username": "<%= @username %>", 
+    "first_name": "", 
+    "last_name": "", 
+    "is_active": true, 
+    "is_superuser": true, 
+    "is_staff": true, 
+    "last_login": "<%= Time.now.strftime('%Y-%m-%d %H:%M:%S') %>", 
+    "groups": [], 
+    "user_permissions": [], 
+    "password": "<%= @password %>", 
+    "email": "<%= @email %>", 
+    "date_joined": "<%= Time.now.strftime('%Y-%m-%d %H:%M:%S') %>"
+  }
+}]
