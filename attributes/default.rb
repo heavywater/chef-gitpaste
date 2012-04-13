@@ -11,3 +11,8 @@ node[:gitpaste][:gunicorn] = Mash.new(
   :exec => nil,
   :config => '/etc/gunicorn/gitpaste.app'
 )
+node[:gitpaste][:superuser] = Mash.new(
+  :username => 'admin',
+  :email => 'admin@example.com',
+  :password => 'secret'
+)
