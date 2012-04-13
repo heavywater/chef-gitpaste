@@ -4,6 +4,7 @@ virt_path = File.join(node[:gitpaste][:directory], 'virtenv')
 repo_path = File.join(node[:gitpaste][:directory], 'repository')
 python_path = File.join(virt_path, 'bin', 'python')
 pip_path = File.join(virt_path, 'bin', 'pip')
+su_fixture = File.join(repo_path, 'saic', 'paste', 'fixtures', 'initial_data.json')
 
 [node[:gitpaste][:directory], virt_path, repo_path].each do |dir|
   directory dir do
@@ -38,6 +39,29 @@ execute 'requirements_install' do
   group 'nogroup'
   action :nothing
   notifies :create, 'ruby_block[fix_admin_symlink]', :immediately
+  notifies :create, "directory[#{File.dirname(su_fixture)}]", :immediately
+end
+
+directory File.dirname(su_fixture) do
+  owner 'nobody'
+  group 'nogroup'
+  mode 0755
+  action :nothing
+  notifies :create, "template[#{su_fixture}]", :immediately
+end
+
+template su_fixture do
+  source 'superuser.json.erb'
+  action :nothing
+  variables(
+    :username => node[:gitpaste][:superuser][:username],
+    :email => node[:gitpaste][:superuser][:email],
+    :password => "sha1$00000$#{Digest::SHA1.hexdigest("00000#{node[:gitpaste][:superuser][:password]}")}"
+  )
+  owner 'nobody'
+  group 'nogroup'
+  mode 0644
+  only_if{ node[:gitpaste][:superuser].respond_to?(:[]) }
   notifies :run, 'execute[run_setup]', :immediately
 end
 
@@ -70,16 +94,6 @@ execute 'run_setup' do
   group 'nogroup'
   not_if do
     File.exists?(File.join(repo_path, 'saic', 'paste.db'))
-  end
-  notifies :run, 'execute[enable_admin]', :immediately
-end
-
-execute 'enable_admin' do
-  command '/bin/true'
-  cwd File.join(repo_path, 'saic')
-  user 'nobody'
-  group 'nogroup'
-  not_if do
   end
 end
 
