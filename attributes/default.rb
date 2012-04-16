@@ -1,9 +1,9 @@
-node[:gitpaste] = Mash.new
-node[:gitpaste][:directory] = '/var/www/gitpaste'
-node[:gitpaste][:red_unicorn] = nil
-node[:gitpaste][:web_server] = :nginx
-node[:gitpaste][:init_type] = :bluepill
-node[:gitpaste][:gunicorn] = Mash.new(
+default[:gitpaste] = Mash.new
+default[:gitpaste][:directory] = '/var/www/gitpaste'
+default[:gitpaste][:red_unicorn] = nil
+default[:gitpaste][:web_server] = :nginx
+default[:gitpaste][:init_type] = :bluepill
+default[:gitpaste][:gunicorn] = Mash.new(
   :workers => 4,
   :backlog => 4096,
   :listen => nil,
@@ -11,7 +11,7 @@ node[:gitpaste][:gunicorn] = Mash.new(
   :exec => nil,
   :config => '/etc/gunicorn/gitpaste.app'
 )
-node[:gitpaste][:superuser] = Mash.new(
+default[:gitpaste][:superuser] = Mash.new(
   :username => 'admin',
   :email => 'admin@example.com',
   :password => 'secret'
