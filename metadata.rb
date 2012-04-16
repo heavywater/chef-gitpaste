@@ -8,3 +8,5 @@ version '0.0.1'
 %w(python gunicorn nginx bluepill).each do |dep_book|
   depends dep_book
 end
+
+supports 'ubuntu'
