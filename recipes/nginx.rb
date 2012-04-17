@@ -14,7 +14,7 @@ template File.join(node['nginx']['dir'], 'sites-available', 'gitpaste.conf') do
     :root => File.join(node[:gitpaste][:directory], *%w(
       repository saic paste
     )),
-    :server => node[:gitpaste][:gunicorn][:listen],
+    :server => node[:gitpaste][:gunicorn][:listen]
   )
   if(::File.symlink?(File.join(node['nginx']['dir'], 'sites-enabled', 'gitpaste.conf')))
     notifies :reload, 'service[nginx]'
