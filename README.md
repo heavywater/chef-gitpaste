@@ -5,12 +5,13 @@ This cookbook installs and configures gitpaste. Currently supported configuratio
 
 * ubuntu
 * nginx
-* bluepill
+* bluepill/runit
 
 Attributes:
 -----------
 
 * node[:gitpaste][:directory] = '/var/www/gitpaste'                  # base installation directory
+* node[:gitpaste][:init_type] = :bluepill                            # init type to use (bluepill/runit). defaults to bluepill
 * node[:gitpaste][:gunicorn][:workers] = 4                           # number of worker processes
 * node[:gitpaste][:gunicorn][:listen] = nil                          # gunicorn socket (tcp/unix). defaults to unix socket
 * node[:gitpaste][:gunicorn][:pid] = nil                             # location of pid file
