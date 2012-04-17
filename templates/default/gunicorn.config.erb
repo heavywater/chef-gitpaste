@@ -1,0 +1,12 @@
+bind = "<%= @bind %>"
+backlog = <%= @backlog %>
+timeout = 60
+keepalive = 2
+max_requests = 0
+preload_app = False
+workers = 4
+worker_class = "sync"
+def on_starting(server):
+  <%= @server_hooks[:on_starting] %>
+
+
