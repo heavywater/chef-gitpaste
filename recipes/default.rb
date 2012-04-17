@@ -119,12 +119,45 @@ node.set[:gitpaste][:red_unicorn] = 'red_unicorn' unless node[:gitpaste][:red_un
 
 include_recipe "gunicorn"
 
+=begin
 gunicorn_config node[:gitpaste][:gunicorn][:config] do
   worker_processes node[:gitpaste][:gunicorn][:workers]
   backlog node[:gitpaste][:gunicorn][:backlog]
   listen node[:gitpaste][:gunicorn][:listen]
   pid node[:gitpaste][:pid]
+  server_hooks(
+    :on_starting => "import os;os.chdir('#{File.join(repo_path, 'saic')}')"
+  )
   action :create
+end
+=end
+
+# NOTE: Use a template for now until official gunicorn cookbook additions
+#   are merged upstream to add missing (and required for this) hooks
+
+directory File.dirname(node[:gitpaste][:gunicorn][:config]) do
+  action :create
+  recursive true
+  owner 'root'
+  group 'root'
+  mode 0755
+end
+
+template node[:gitpaste][:gunicorn][:config] do
+  source 'gunicorn.config.erb'
+  owner 'root'
+  group 'root'
+  mode 0644
+  variables(
+    :bind => node[:gitpaste][:gunicorn][:listen],
+    :worker_processes => node[:gitpaste][:gunicorn][:workers],
+    :backlog => node[:gitpaste][:gunicorn][:backlog],
+    :listen => node[:gitpaste][:gunicorn][:listen],
+    :pid => node[:gitpaste][:pid],
+    :server_hooks => {
+      :on_starting => "import os;os.chdir('#{File.join(repo_path, 'saic')}')"
+    }
+  )
 end
 
 # Add gunicorn for running pastebin
@@ -143,6 +176,8 @@ end
 case node[:gitpaste][:init_type].to_sym
 when :bluepill
   include_recipe 'gitpaste::bluepill'
+when :runit
+  include_recipe 'gitpaste::runit'
 else
   raise 'Unsupported init type requested'
 end
